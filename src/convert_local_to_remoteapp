@@ -1,0 +1,35 @@
+#!/usr/bin/python
+#Converts local / paths to \\\\tsclient\\\\vfsroot for remoteapp consumption
+#Converts local $HOME paths to \\\\tsclient\\\\home for remoteapp consumption
+#HACK: When %U (used in GNOME menus/file associations) is found, deliberately
+#      return empty string to avoid opening a non-existent path
+#Author: David Ball, www.daball.me
+import sys, os
+server = 'tsclient'
+share = 'vfsroot'
+#get all of cmd line as a single path, regardless of '' or "" quotations used
+path = ' '.join(sys.argv[1:])
+#trim all whitespace around edges
+path = path.strip()
+#trim all quotations around edges, NOTE: has potential problem of ignoring
+#a file name that ends with a quotation mark, however rare it would seem to be
+path = path.strip('\'\"')
+#expand ~/ user paths
+path = os.path.expanduser(path)
+#get the absolute path, converting ./ and ../ and so on
+path = os.path.realpath(path)
+#check whether it falls under the \\tsclient\home or \\tsclient\vfsroot scope
+if path.find(os.environ['HOME']) != -1:
+  share = 'home'
+  path = path[len(os.environ['HOME']):]
+#trim leading /
+if len(path) > 0 and path[0] == '/': path = path[1:]
+#join the base path to the share name to the server to the root
+path = '/' + os.path.join('/', server, share, path)
+#trim trailing /
+if path[-1] == '/': path = path[0:-1]
+#convert from unix style to windows-style slashes
+path = path.replace('/', '\\')
+#if the word %U shows up, don't return anything, otherwise print the path
+if path != '%U':
+  print '\"'+path+'\"'
