@@ -1,0 +1,67 @@
+FreeRDP-RemoteApp-IntegrationScripts README
+===========================================
+
+Following through from the article I wrote here:
+http://www.daball.me/2011/11/windows-meet-linux-linux-meet-remoteapp.html
+
+I devised the following integration script installer.
+
+The following packages contains RemoteApp integration scripts intended for
+use with FreeRDP and Microsoft Windows Remote Desktop Services RemoteApp.
+
+In order to use these scripts, you will need:
+1. Windows Server 2008 or 2008 R2 with Terminal Services and RemoteApp licensed.
+2. One or more Linux FreeRDP client(s)
+
+Getting Source
+--------------
+mkdir $HOME/src
+cd $HOME/src
+git clone https://github.com/daball/FreeRDP-RemoteApp-IntegrationScripts.git
+cd FreeRDP-RemoteApp-IntegrationScripts
+
+Installing FreeRDP, the easy way (outdated?)
+--------------------------------------------
+./install-freerdp-current.sh
+
+Installing Integration Scripts
+------------------------------
+./install-scripts.sh
+
+Using FreeRDP
+-------------
+This is well beyond the intentions here. Try:
+
+man xfreerdp
+
+Customizing Integration Script
+------------------------------
+Before you can use this script, you *must* edit it.
+
+gedit $HOME/bin/remoteapp
+nano $HOME/bin/remoteapp
+
+Using Integration Scripts
+-------------------------
+The remoteapp script can be called like so:
+
+For RemoteApp executables:
+$HOME/bin/remoteapp 'notepad.exe'
+
+For RemoteApp aliases:
+$HOME/bin/remoteapp '||notepad'
+
+I have also devised a way to open local files at the remote host in the
+command-line.
+
+For RemoteApp aliases:
+$HOME/bin/remoteapp '||notepad' --convert-linux-path "./README"
+
+So now, for example, you can integrate a program into the GNOME menu just the
+same way.
+
+$HOME/bin/remoteapp '||notepad' --convert-linux-path "%U"
+
+Enjoy!
+------
+Visit my web site to see more specific examples of the script in action.
